@@ -53,7 +53,7 @@ pnpm install
 
 ### 3. Environment Setup
 
-Create a `.env.local` file in the root directory(Check the clerk Documentation for this).
+Create a `.env.local` file in the root directory([Check the clerk Documentation for this](https://clerk.com/docs/deployments/clerk-environment-variables)).
 
 
 ### 4. Run the Development Server
