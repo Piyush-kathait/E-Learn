@@ -20,24 +20,23 @@ import {
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import { Course } from "@prisma/client";
-import { Combobox } from "@/components/ui/combobox";
+import { Input } from "@/components/ui/input";
+import { formatPrice } from "@/lib/format";
 
 
-interface CategoryFormProps {
+interface PriceFormProps {
     initialData: Course;
     courseId: string;
-    options:{label:string,value:string;}[]
 };
 const formSchema = z.object({
-    categoryId:z.string().min(1),
+    price:z.coerce.number(),
 });
 
 
-const CategoryForm = ({
+const PriceForm = ({
     initialData,
     courseId,
-    options,
-}: CategoryFormProps) => {
+}: PriceFormProps) => {
     const [isEditing, setIsEditing] = useState(false);
 
 
@@ -45,10 +44,11 @@ const CategoryForm = ({
         setIsEditing((current) => !current);
     }
     const router = useRouter();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            categoryId: initialData?.categoryId || "",
+            price: initialData?.price || undefined,
         },
     });
     const { isSubmitting, isValid } = form.formState;
@@ -62,18 +62,16 @@ const CategoryForm = ({
             toast.error("something went wrong");
         }
     }
-
-    const selectedOption = options.find((option)=>option.value===initialData.categoryId);
     return (
         <div className="mt-6 rounded-md p-4 bg-slate-100">
             <div className="font-medium flex items-center justify-between">
-                Course category
+                Course Price
                 <Button onClick={toggleEdit} variant="ghost">
                     {isEditing ?
                         (<> Cancel</>) : (
                             <>
                                 <Pencil className="h-4 w-4 mr-2" />
-                                Edit category
+                                Edit price
                             </>
                         )
                     }
@@ -83,9 +81,12 @@ const CategoryForm = ({
             {!isEditing && (
                 <p className={cn(
                     "text-sm mt-2",
-                    !initialData.categoryId && "text-slate-500 italic"
+                    !initialData.price && "text-slate-500 italic"
                 )}>
-                    {selectedOption?.label || "no category"}
+                    {initialData.price
+                        ? formatPrice(initialData.price)
+                        :"No price"
+                    }
                 </p>
             )}
             {isEditing && (
@@ -93,14 +94,14 @@ const CategoryForm = ({
                     <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-4 mt-4">
                         <FormField
                             control={form.control}
-                            name="categoryId"
+                            name="price"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormControl>
-                                        <Combobox
-                                            options={options}
-                                            {...field}
-                                        />
+                                        <Input
+                                            disabled={isSubmitting}
+                                            placeholder="e.g. '399.99 " 
+                                            {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -123,4 +124,4 @@ const CategoryForm = ({
     );
 }
 
-export default CategoryForm;
+export default PriceForm;
