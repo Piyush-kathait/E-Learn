@@ -39,7 +39,7 @@ export const Combobox = ({
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-[200px] justify-between"
+                    className="justify-between"
                 >
                     {value
                         ? options.find((options) => options.value === value)?.label
