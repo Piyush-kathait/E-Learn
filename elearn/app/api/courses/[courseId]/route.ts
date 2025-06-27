@@ -11,7 +11,6 @@ export async function PATCH(
         const {courseId} = await params
         const values = await req.json();
 
-        // Extract userId from the auth result
         const userId = authResult?.userId;
 
         if (!userId) {
